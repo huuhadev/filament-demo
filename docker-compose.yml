@@ -1,0 +1,89 @@
+services:
+    mysql:
+        container_name: db
+        image: mariadb:latest
+        restart: unless-stopped
+        tty: true
+        ports:
+            - ${DB_PORT}:3306
+        environment:
+            MYSQL_DATABASE: ${DB_DATABASE}
+            MYSQL_USER: ${DB_USERNAME}
+            MYSQL_PASSWORD: ${DB_PASSWORD}
+            MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+            SERVICE_TAGS: dev
+            SERVICE_NAME: mysql
+        volumes:
+            - db:/var/lib/mysql
+
+    caddy:
+        container_name: caddy
+        image: caddy:latest
+        restart: unless-stopped
+        ports:
+            - "80:80"
+            - "443:443"
+            - "443:443/udp"
+        volumes:
+            - ./docker/caddy/Caddyfile:/etc/caddy/Caddyfile
+            - ./:/var/www/
+        depends_on:
+            - mysql
+            - meilisearch
+
+    php-fpm:
+        container_name: php
+        build:
+            target: php-fpm
+        restart: unless-stopped
+        environment:
+            - ADMIN_FIRSTNAME=${ADMIN_FIRSTNAME}
+            - ADMIN_LASTNAME=${ADMIN_LASTNAME}
+            - ADMIN_EMAIL=${ADMIN_EMAIL}
+            - ADMIN_PASSWORD=${ADMIN_PASSWORD}
+        volumes:
+            - ./:/var/www/:rw,cached
+        depends_on:
+            - mysql
+            - meilisearch
+
+    meilisearch:
+        container_name: meilisearch
+        image: getmeili/meilisearch:latest
+        restart: unless-stopped
+        environment:
+            - MEILI_MASTER_KEY=${MEILISEARCH_KEY}
+            - MEILI_LOG_LEVEL=ERROR
+        volumes:
+            - meilisearch:/meili_data
+        ports:
+            - "${MEILISEARCH_PORT}:${MEILISEARCH_PORT}"
+        depends_on:
+            - mysql
+
+    meilisearch-ui:
+        container_name: meilisearch-ui
+        image: riccoxie/meilisearch-ui:latest
+        restart: unless-stopped
+        ports:
+            - ${MEILISEARCH_UI_PORT}:24900
+        depends_on:
+            - meilisearch
+
+    redis:
+        container_name: redis
+        image: redis:latest
+        restart: unless-stopped
+        ports:
+            - "${REDIS_PORT}:${REDIS_PORT}"
+
+    mailhog:
+        container_name: mailhog
+        image: 'mailhog/mailhog:latest'
+        ports:
+            - '1025:1025'
+            - '8025:8025'
+
+volumes:
+    db:
+    meilisearch:

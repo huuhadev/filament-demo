@@ -1,0 +1,63 @@
+{
+    "name": "huuhadev/lunar-api",
+    "description": "Power your JavaScript storefront or mobile app via Lunar's RESTful JSON:API.",
+    "keywords": [
+        "huuhadev",
+        "laravel",
+        "lunar-api",
+        "api",
+        "RESTful",
+        "RESTful Api"
+    ],
+    "homepage": "https://github.com/huuhadev/lunar-api",
+    "support": {
+        "issues": "https://github.com/huuhadev/lunar-api/issues",
+        "source": "https://github.com/huuhadev/lunar-api"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Huu Ha",
+            "email": "huuhadev@gmail.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^8.2",
+        "laravel/framework": "^11.0",
+        "lunarphp/core": "self.version",
+        "ext-json": "*",
+        "laravel-json-api/core": "^4.1",
+        "laravel-json-api/eloquent": "^4.1",
+        "laravel-json-api/encoder-neomerx": "^4.0",
+        "laravel-json-api/exceptions": "^3.0",
+        "laravel-json-api/spec": "^3.0",
+        "laravel-json-api/validation": "^4.0",
+        "spatie/laravel-package-tools": "^1.15"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^9.0",
+        "phpunit/phpunit": "^10.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "Huuhadev\\LunarApi\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "aliases": {
+                "LunarApi": "LaravelJsonApi\\Core\\Facades\\LunarApi",
+                "LunarApiRoute": "Huuhadev\\LunarApi\\Facades\\LunarApiRoute"
+            },
+            "providers": [
+                "Huuhadev\\LunarApi\\LunarApiServiceProvider"
+            ]
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
